@@ -1,0 +1,35 @@
+#////////////////////////PC naam veranderen //////////////////////////////
+param(
+ $pcname
+)
+
+$pcn = $env:computername
+
+#////////////////////////Functie DNS veranderen//////////////////////////////
+
+function DNS{
+ $dns = Read-host -Prompt “Voer het dns addres in”
+ $adns = Read-host -Prompt “Voer het alternate dns addres in”
+ Set-DNSClientServerAddress "Ethernet0" –ServerAddresses ("$dns", "$adns")
+ }
+
+ #////////////////////////Functie Reboot//////////////////////////////
+
+ function reboot{
+   Restart-Computer -Confirm
+ }
+
+ #////////////////////////PC naam Controle//////////////////////////////
+
+if ($pcname -eq $pcn){
+ Write-Output "Uw opgegeven PC naam is all in gebruik"
+} Else{
+ Write-Output "De pc naam word veranderd van $pcn naar $pcname"
+ 
+ Rename-Computer -NewName $pcname
+ DNS
+
+ Add-Computer -DomainName vanluijten.nl -Credential VANLUIJTEN\Administrator -NewName $pcname 
+ reboot
+
+ }
